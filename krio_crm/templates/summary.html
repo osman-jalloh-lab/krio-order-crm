@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Today{% endblock %}{% block body %}{% from "_m.html" import phpick %}
+<div class=head><div><p class=eyebrow>Daily summary</p><h1>{{d}}</h1></div><div class=hact><form class=phpick>{% if ph %}<input type=hidden name=pharmacy value="{{ph}}">{% endif %}<select name=day onchange="this.form.submit()" aria-label="Day">{% for x in days %}<option {{'selected' if x==d}}>{{x}}</option>{% endfor %}</select></form>{{ phpick(phs, ph, '<input type=hidden name=day value="'~d~'">') }}</div></div>
+<div class=stats><div class="stat hero"><b class=num>{{st.orders}}</b><span class=small>orders</span></div><div class=stat><b class=num>{{st.confirmed}}</b><span class="muted small">confirmed</span></div>
+<div class=stat><b class=num>{{st.replied}}</b><span class="muted small">replies sent</span></div><div class=stat><b class=num>{{st.auto_pct}}%</b><span class="muted small">lines matched without help</span></div></div><br>
+<div class=grid2><div class=card><h2 style="margin-bottom:8px">Top items</h2>{% if not top %}<p class=muted>No items on this day.</p>{% endif %}{% set mx=(top[0][1] if top else 1) %}
+{% for it,q in top %}<div class=bar><span>{{it}}</span><b class=num>{{q}} {{units[it]}}</b><span class=track><i style="width:{{ (100*q/mx)|round|int }}%"></i></span></div>{% endfor %}</div>
+<aside class=stack><div class=card><h2 style="margin-bottom:8px">To do</h2><div class=lrow><span>Orders that need a check</span><b class=num>{{st.needs_check}}</b></div><div class=lrow><span>Customers who ordered</span><b class=num>{{st.customers}}</b></div><div class=lrow><span>Came in on WhatsApp</span><b class=num>{{st.whatsapp}}</b></div>
+<a class="btn ghost block" href="/?f=Needs check">Open orders to check</a></div></aside></div>
+<p class=note>Counts use confirmed lines where the owner confirmed, otherwise matched lines. Test data.</p>{% endblock %}

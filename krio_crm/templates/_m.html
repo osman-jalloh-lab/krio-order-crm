@@ -1,0 +1,3 @@
+{% macro ic(n) %}<svg class=ico aria-hidden=true><use href="#i-{{n}}"/></svg>{% endmacro %}
+{% macro phpick(phs, ph, extra='') %}<form class=phpick>{{extra|safe}}<select name=pharmacy onchange="this.form.submit()" aria-label="Pharmacy"><option value="">All pharmacies</option>{% for p in phs %}<option value="{{p.id}}" {{'selected' if ph==p.id}}>{{p.name}}</option>{% endfor %}</select><noscript><button class="btn ghost">Go</button></noscript></form>{% endmacro %}
+{% macro back(href,label) %}<a class="backl small" href="{{href}}"><svg class=ico aria-hidden=true><use href="#i-back"/></svg>{{label}}</a>{% endmacro %}

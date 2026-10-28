@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}{{p.name}}{% endblock %}{% block body %}{% from "_m.html" import ic, back %}
+{{ back('/pharmacies','Pharmacies') }}
+<div class=head><div class=idrow><span class="av lg shop" aria-hidden=true>{{ic('shop')}}</span><div><p class=eyebrow>{{p.town}}</p><h1>{{p.name}}</h1><p class="muted small sub">{{ 'TEST record' if p.is_test }} · added {{p.created|day}}</p></div></div><span class="chip info">{{p.status|capitalize}}</span></div>
+{% if request.args.saved %}<div class=done role=status>{{ic('check')}}Saved</div><br>{% endif %}
+<div class=quick><a class="btn ghost" href="/?pharmacy={{p.id}}">{{ic('inbox')}}Orders</a><a class="btn ghost" href="/catalogue?pharmacy={{p.id}}">{{ic('list')}}Catalogue · {{n_items}}</a><a class="btn ghost" href="/summary?pharmacy={{p.id}}">{{ic('chart')}}Summary</a></div><br>
+<div class=grid2><div class=stack><div class=card><h2 style="margin-bottom:10px">Recent orders</h2>{% for o in orders %}{% set ch=chip(o) %}<a class=lrow href="/o/{{o.id}}"><span class=trunc><b>{{who(o)}}</b> <span class="muted small">{{o.created|when}}</span></span><span class="chip {{ch[1]}}">{{ch[0]}}</span></a>{% else %}<p class=muted>No orders yet.</p>{% endfor %}</div>
+<div class=card><h2 style="margin-bottom:10px">Customers</h2>{% for c in cust %}<a class=lrow href="/customers/{{c.id}}"><span class=trunc><b>{{c.name or 'Unknown'}}</b> <span class="muted small">+{{c.wa_id}}</span></span><span class="num small">{{c.n_orders}} orders</span></a>{% else %}<p class=muted>No customers yet.</p>{% endfor %}</div></div>
+<form class="card stack sticky" method=post><h2>Account</h2>
+<label class=fld>Name<input type=text name=name value="{{p.name}}"></label><label class=fld>Town<input type=text name=town value="{{p.town}}"></label>
+<label class=fld>Owner<input type=text name=owner_name value="{{p.owner_name}}"></label>
+<label class=fld>Stage<select name=status>{% for s in ['lead','trial','active','paused'] %}<option {{'selected' if p.status==s}}>{{s}}</option>{% endfor %}</select></label>
+<label class=fld>Plan<select name=plan>{% for s in ['free','monthly','one-time'] %}<option {{'selected' if p.plan==s}}>{{s}}</option>{% endfor %}</select></label>
+<label class=fld>WhatsApp phone number ID<input type=text name=wa_phone_number_id value="{{p.wa_phone_number_id}}" placeholder="from Meta API Setup"></label>
+<label class=fld>Notes<textarea name=notes rows=3>{{p.notes}}</textarea></label><button class="btn block">Save</button></form></div>{% endblock %}

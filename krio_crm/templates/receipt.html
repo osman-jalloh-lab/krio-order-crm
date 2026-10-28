@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Receipt{% endblock %}{% block body %}{% from "_m.html" import ic, back %}
+{{ back('/','Inbox') }}
+<div class=head><div><p class=eyebrow>{{o.pharmacy}}</p><h1>Receipt</h1><p class="muted small sub">Order {{o.id}} · {{ who(o) }}</p></div><a class="btn ghost" href="/o/{{o.id}}/pdf">{{ic('file')}}Open PDF</a></div>
+<div class=grid2><div class=stack>
+{% set r=o.reply or {} %}{% if r.status and r.status.startswith('sent') %}<div class=done role=status>{{ic('check')}}Reply sent to +{{r.to}}{{ ' (test mode)' if r.status=='sent-simulated' }}</div>
+{% elif r.status=='blocked-window-closed' %}<div class="done bad" role=status>{{ic('alert')}}Not sent: more than 24 hours since the customer's message. Call them, or wait for them to message again.</div>
+{% elif r.status %}<div class="done bad">{{ic('alert')}}Reply failed ({{r.error}}). The order is saved.</div>{% endif %}
+<div class=card><table class=rt><thead><tr><th>Qty</th><th>Item</th><th>How</th></tr></thead><tbody>{% for l in o.final %}<tr><td class=num>{{l.qty}} {{l.unit}}</td><td>{{l.item}}<div class="small muted">heard “{{l.raw}}”</div></td><td><span class="chip {{ 'ok' if l.match=='auto' else ('warn' if l.match=='owner-confirmed' else 'bad') }}">{{ {'auto':'Auto','owner-confirmed':'You picked','unknown':'Unknown'}[l.match] }}</span></td></tr>{% endfor %}</tbody></table></div>
+<img class=pdf src="/o/{{o.id}}/pdf.png" alt="PDF order record, page 1" loading=lazy></div>
+<aside class="sticky stack"><div class=card><h2 style="margin-bottom:10px">Conversation</h2><div class=wa>
+<div class="bub in">{% if o.kind=='audio' %}{{ic('mic')}} Voice note{% else %}{{ o.transcript }}{% endif %}<time>{{o.created|hm}}</time></div>
+{% if r.body %}<div class="bub out">{{r.body}}<time>{{o.confirmed|hm}}</time></div>{% endif %}</div></div>
+{% if o.customer_id %}<a class="btn ghost block" href="/customers/{{o.customer_id}}">{{ic('users')}}Customer history</a>{% endif %}</aside></div>
+{% endblock %}

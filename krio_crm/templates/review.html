@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% block title %}Review{% endblock %}{% block body %}{% from "_m.html" import ic, back %}
+{{ back('/','Inbox') }}
+<div class=head><div><p class=eyebrow>{{o.pharmacy}}</p><h1>{{ who(o) }}</h1><p class="muted small sub">{% if o.customer_wa %}<a href="/customers/{{o.customer_id}}">+{{o.customer_wa}}</a> · {% endif %}{{o.created|replace('T',' ')}} · {{ 'Voice note' if o.kind=='audio' else 'Text message' }}</p></div>{% set c=chip(o) %}<span class="chip {{c[1]}}">{{c[0]}}</span></div>
+<div class=grid2><div class=stack>
+<div class="card stack">{% if o.audio %}<div class=voice style="margin:0">{{ic('mic')}}<audio controls preload=metadata src="/o/{{o.id}}/audio" style="max-width:none"></audio></div>{% endif %}
+<div class=heard><span class="small muted">{{ 'Heard' if o.kind=='audio' else 'Message' }}{% if o.engine %} ({{o.engine}}){% endif %}:</span> {{ o.transcript or '(nothing yet)' }}</div>
+{% if o.engines.get('asr-off') %}<div class="flag info">{{ic('alert')}}<span>{{o.engines['asr-off'].note}}</span></div>{% endif %}
+{% if o.status!='final' %}<details {{'open' if not o.lines}}><summary>{{ 'Type what you hear' if o.kind=='audio' else 'Correct the text' }}</summary>
+<form method=post action="/o/{{o.id}}/retype" class=retype><input type=text name=text value="{{o.transcript}}" placeholder="e.g. tu strip panadol en wan botul kof medsin" aria-label="What the customer said"><button class="btn ghost">Match</button></form></details>{% endif %}</div>
+<form method=post action="/o/{{o.id}}/confirm" id=cf class=stack>
+{% set autos=o.lines|selectattr('status','equalto','auto')|list %}
+{% if o.lines %}<div class=legend><span class="pct hi">Added</span> matched automatically · <span class="pct mid">Did you mean</span> pick one · <span class="pct lo">Blank</span> not in your list</div>{% endif %}
+{% for l in o.lines %}{% set i=loop.index0 %}{% set k=conf(l) %}
+<div class="line {{k}}"><div class=top2><input class="qty num" name="qty{{i}}" value="{{l.qty}}" inputmode=numeric aria-label="Quantity">
+<div style="min-width:0;flex:1"><div class=name>{{ l.item or ('Did you mean…' if l.top3 else 'Blank — not on the list') }}</div><div class="small muted">heard “{{l.raw}}”{% if l.unit %} · {{l.unit}}{% endif %}</div></div>
+<span class="pct {{k}} num" title="Match confidence">{{ l.score|round|int }}%</span></div>
+<div class=dym role=radiogroup aria-label="Item for line {{i+1}}">{% set first=l.item or (l.top3[0].item if l.top3) %}
+{% for t in l.top3 %}<input type=radio id="r{{i}}-{{loop.index}}" name="item{{i}}" value="{{t.item}}" {{'checked' if t.item==first}}><label for="r{{i}}-{{loop.index}}">{{t.item}} <small>{{t.score|round|int}}%</small></label>{% endfor %}
+<input type=radio id="r{{i}}-x" name="item{{i}}" value="__DROP__" {{'checked' if not l.top3}}><label for="r{{i}}-x" class=drop>Remove</label></div>
+{% if l.repeat_of is not none %}<div class="flag warn">{{ic('alert')}}<span>Said twice — same as line {{l.repeat_of+1}}. Keep one or both?</span><select name="keep{{i}}" aria-label="Said twice"><option value=one selected>Keep one</option><option value=both>Keep both</option></select></div>{% endif %}
+{% if l.watch %}<div class="flag warn">{{ic('alert')}}<span>Watch list: “{{l.watch}}” sounds like more than one item. Check with the customer.</span></div>{% endif %}
+<details><summary>Pick another item from the list</summary><select name="alt{{i}}" aria-label="Other item"><option value="">—</option>{% for c in cat %}<option>{{c.item}}</option>{% endfor %}</select></details></div>
+{% else %}<div class="card empty"><h2>No items yet</h2><p class=muted>{{ 'Listen to the voice note and type what you hear above.' if o.kind=='audio' else 'Nothing in the message matched the list.' }}</p></div>{% endfor %}
+</form></div>
+<aside class="sticky stack"><div class=card><h2 style="margin-bottom:10px">Reply on WhatsApp</h2>
+<div class=wa><div class="bub in">{% if o.kind=='audio' %}{{ic('mic')}} Voice note{% else %}{{o.transcript}}{% endif %}<time>{{o.created|hm}}</time></div><div class="bub out">{{preview}}<time>now</time></div></div>
+<p class=note>Plain text, sent inside 24 hours of the customer's message. Uses the items you keep.{% if mode()!='live' %} Test mode: nothing leaves this computer.{% endif %}</p>
+{% if o.status=='final' %}<a class="btn ghost block" href="/o/{{o.id}}/receipt">{{ic('file')}}See receipt</a>{% else %}<button class="btn go block" form=cf {{'disabled' if not o.lines}}>{{ic('send')}}Confirm &amp; send reply</button>{% endif %}</div>
+<div class="card small"><b>{{autos|length}}</b> of {{o.lines|length}} lines matched automatically.</div></aside>
+</div>{% endblock %}

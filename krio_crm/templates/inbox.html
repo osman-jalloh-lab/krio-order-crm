@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Inbox{% endblock %}{% block body %}{% from "_m.html" import ic, phpick %}
+<div class=head><div><p class=eyebrow>WhatsApp orders</p><h1>Inbox</h1><p class="muted small sub">Voice notes and messages from customers. Check each one, then send the reply.</p></div>
+<div class=hact>{{ phpick(phs, ph, '<input type=hidden name=f value="'~f~'">') }}<a class="btn fab" href="/simulate">{{ic('mic')}}Test message</a></div></div>
+{% if request.args.sim %}<div class="flag info" role=status>{{ic('chat')}}<span>Test message posted to the webhook (HTTP {{request.args.sim}}). It shows below; voice notes may take a few seconds.</span></div><br>{% endif %}
+<div class=filters role=tablist>{% for k in ['all','Needs check','Ready','Replied','Window closed'] %}<a href="?f={{k}}{{ '&pharmacy='~ph if ph }}" class="{{'on' if f==k}}">{{ 'All' if k=='all' else k }}{% if k!='all' %} <span class=cnt>{{counts[k]|default(0)}}</span>{% endif %}</a>{% endfor %}</div>
+{% if not orders %}<div class="card empty"><h2>Nothing here yet</h2><p class=muted>When a customer sends a voice note to the shop's WhatsApp number, it lands here.</p><a class=btn href="/simulate">Send a test message</a></div>{% endif %}
+<div class=list>{% for o in orders %}{% set c=chip(o) %}
+<a class="msg rowlink" href="/o/{{o.id}}"><div class=av aria-hidden=true>{{ initials(who(o)) }}</div><div style="min-width:0">
+<div class=row><span class=who>{{ who(o) }}</span><span class="chip {{c[1]}}">{{c[0]}}</span></div>
+<div class="row small muted"><span class=trunc>{{o.pharmacy}}</span><span class=num>{{o.created|when}}</span></div>
+<div class=what>{% if o.kind=='audio' %}<span class=kind>{{ic('mic')}}</span>{% else %}<span class=kind>{{ic('chat')}}</span>{% endif %}
+{% if o.lines %}{{ o.lines|length }} item{{ 's' if o.lines|length!=1 }}: {% for l in o.lines %}{{l.qty}} {{ l.item or ('“'~l.raw~'”') }}{{ ', ' if not loop.last }}{% endfor %}{% elif o.status=='transcribing' %}Listening to the voice note…{% else %}No items yet — open to listen{% endif %}</div>
+</div></a>{% endfor %}</div>
+{% endblock %}

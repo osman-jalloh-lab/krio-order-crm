@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}{{c.name}}{% endblock %}{% block body %}{% from "_m.html" import ic, back %}
+{{ back('/customers','Customers') }}
+<div class=head><div class=idrow><span class="av lg" aria-hidden=true>{{initials(c.name or c.wa_id)}}</span><div><p class=eyebrow>{{c.pharmacy}}</p><h1>{{c.name or 'Unknown customer'}}</h1><p class="muted small sub">+{{c.wa_id}} · customer since {{c.created|day}}</p></div></div>
+<span class="chip {{ {'vip':'ok','regular':'info','blocked':'bad'}.get(c.status,'plain') }}">{{c.status|capitalize}}</span></div>
+{% if request.args.saved %}<div class=done role=status>{{ic('check')}}Saved</div><br>{% endif %}
+<div class="stats s3"><div class=stat><b class=num>{{orders|length}}</b><span class="muted small">orders</span></div><div class=stat><b class=num>{{orders|selectattr('status','equalto','final')|list|length}}</b><span class="muted small">confirmed</span></div><div class=stat><b class=num>{{ (orders[0].created|when) if orders else '—' }}</b><span class="muted small">last order</span></div></div><br>
+<div class=grid2><div class=stack><div class=card><h2 style="margin-bottom:10px">Order history</h2>{% if not orders %}<p class=muted>No orders yet.</p>{% endif %}
+<ol class=timeline>{% for o in orders %}{% set ch=chip(o) %}<li><a href="/o/{{o.id}}"><span class=tdot></span><div class=row><b class=num>{{o.created|replace('T',' ')|truncate(16,true,'')}}</b><span class="chip {{ch[1]}}">{{ch[0]}}</span></div>
+<div class="small muted">{% for l in (o.final or o.lines) %}{{l.qty}} {{ l.item or ('“'~l.raw~'”') }}{{ ', ' if not loop.last }}{% else %}No items{% endfor %}</div></a></li>{% endfor %}</ol></div></div>
+<aside class="sticky stack"><div class=card><h2 style="margin-bottom:8px">Usually orders</h2>{% for it,n in usual %}<div class=bar><span>{{it}}</span><b class=num>{{n}}×</b></div>{% else %}<p class="muted small">Nothing yet.</p>{% endfor %}</div>
+<form class="card stack" method=post><h2>Details</h2><label class=fld>Name<input type=text name=name value="{{c.name}}"></label>
+<label class=fld>Status<select name=status>{% for s in ['new','regular','vip','blocked'] %}<option {{'selected' if c.status==s}}>{{s}}</option>{% endfor %}</select></label>
+<label class=fld>Tags<input type=text name=tags value="{{c.tags}}" placeholder="pickup, delivery"></label><label class=fld>Notes<textarea name=notes rows=3>{{c.notes}}</textarea></label>
+<button class="btn block">Save</button><p class=note>Keep notes about orders only. No health or patient details.</p></form></aside></div>{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block title %}Settings{% endblock %}{% block body %}{% from "_m.html" import ic %}
+<div class=head><div><p class=eyebrow>Connect WhatsApp</p><h1>Settings</h1><p class="muted small sub">Mode: <b>{{ 'Live (real WhatsApp)' if m=='live' else 'Simulator (test mode) — no messages leave this computer' }}</b> · Graph API {{ver}} · Speech-to-text: <b>{{ 'on ('~engines|join(', ')~')' if asr else 'off (KRIO_ASR=1 to turn on)' }}</b></p></div></div>
+<div class=grid2><div class=card><h2>Connect WhatsApp</h2><p class="note">Each step needs Osman's OK before it is done for real. Values stay in environment variables and are never shown here.</p>
+{% set steps=[
+ (false,'Meta developer app','Create a Business-type app at developers.facebook.com and add the WhatsApp product.'),
+ (false,'WhatsApp Business Account + test number','Meta gives a free test number that can message up to 5 verified phones.'),
+ (env.WA_TOKEN,'Access token  · WA_TOKEN','Temporary token for testing; a permanent System User token for live.'),
+ (env.WA_PHONE_NUMBER_ID,'Phone number ID · WA_PHONE_NUMBER_ID','From WhatsApp › API Setup.'),
+ (env.WA_VERIFY_TOKEN,'Verify token · WA_VERIFY_TOKEN','Any long random string; the same value goes in the Meta webhook form.'),
+ (env.WA_APP_SECRET,'App secret · WA_APP_SECRET','Used to check the X-Hub-Signature-256 on every webhook POST.'),
+ (false,'Public HTTPS webhook URL','Meta needs https with a valid certificate. Local URL now: ' ~ hook),
+ (false,'Subscribe to the “messages” field','In WhatsApp › Configuration › Webhooks.'),
+ (false,'Business verification + real number','Add the shop number, verify the business, set a display name.'),
+ (env.WA_LIVE,'Turn on live mode · WA_LIVE=1','Only after Osman approves. Without it the app stays in simulator mode.')] %}
+{% for ok,t,d in steps %}<div class=check><span class="dot {{'y' if ok}}">{% if ok %}{{ic('check')}}{% else %}{{loop.index}}{% endif %}</span><div><b>{{t}}</b> {% if t.find('·')>0 %}<span class="chip {{'ok' if ok else 'plain'}}">{{ 'set' if ok else 'not set' }}</span>{% endif %}<div class="small muted">{{d}}</div></div></div>{% endfor %}</div>
+<aside class=stack><div class=card><h2 style="margin-bottom:8px">Simulator outbox</h2>{% if not outbox %}<p class="muted small">No replies yet.</p>{% endif %}
+<div class=wa>{% for x in outbox %}<div class="bub out">{{x.request.text.body}}<time>to +{{x.request.to}}</time></div>{% endfor %}</div>
+<p class=note>What would have been POSTed to /{phone-number-id}/messages.</p></div>
+<div class=card><h2 style="margin-bottom:8px">Webhook</h2><p class="small">Verify: <code>GET /webhook?hub.mode=subscribe…</code><br>Receive: <code>POST /webhook</code> (signed)</p><a class="btn ghost" href="/simulate">{{ic('mic')}}Open simulator</a></div>
+<div class=card><h2 style="margin-bottom:8px">Numbers per pharmacy</h2>{% for p in phs %}<div class=lrow><span>{{p.name}}</span><code>{{p.wa_phone_number_id or "not set"}}</code></div>{% endfor %}<p class=note>Incoming messages go to the pharmacy whose phone number ID matches.</p></div></aside></div>
+{% endblock %}

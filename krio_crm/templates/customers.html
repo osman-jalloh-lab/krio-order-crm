@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Customers{% endblock %}{% block body %}{% from "_m.html" import ic, phpick %}
+<div class=head><div><p class=eyebrow>CRM</p><h1>Customers</h1><p class="muted small sub">Everyone who has ordered on WhatsApp, newest first.</p></div>
+<div class=hact><form class=search role=search>{% if ph %}<input type=hidden name=pharmacy value="{{ph}}">{% endif %}{{ic('search')}}<input type=text name=q value="{{s}}" placeholder="Name or number" aria-label="Search customers"></form>{{ phpick(phs, ph, '<input type=hidden name=q value="'~s~'">') }}</div></div>
+<div class="tabs2"><a class=on href="/customers">Customers <span class=cnt>{{rows|length}}</span></a><a href="/pharmacies">Pharmacies <span class=cnt>{{phs|length}}</span></a></div>
+{% if not rows %}<div class="card empty"><h2>No customers found</h2><p class=muted>Customers appear after their first WhatsApp message.</p></div>{% endif %}
+<div class="card tablecard"><table class=crm><thead><tr><th>Customer</th><th>Pharmacy</th><th>Status</th><th class=r>Orders</th><th class=r>Last order</th></tr></thead><tbody>
+{% for c in rows %}<tr onclick="location='/customers/{{c.id}}'"><td><a class=cell href="/customers/{{c.id}}"><span class="av sm" aria-hidden=true>{{initials(c.name or c.wa_id)}}</span><span><b>{{c.name or 'Unknown'}}</b><span class="small muted d">+{{c.wa_id}}</span></span></a></td>
+<td class=hide-m>{{c.pharmacy}}</td><td><span class="chip {{ {'vip':'ok','regular':'info','blocked':'bad'}.get(c.status,'plain') }}">{{c.status|capitalize}}</span></td><td class="r num">{{c.n_orders}}</td><td class="r num muted hide-m">{{c.last_order|when}}</td></tr>{% endfor %}
+</tbody></table></div>{% endblock %}

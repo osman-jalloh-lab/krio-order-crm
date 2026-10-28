@@ -1,0 +1,7 @@
+# core (dashboard, API, webhook, matcher, PDF)
+flask>=3.0
+rapidfuzz>=3.6
+jellyfish>=1.0
+reportlab>=4.0
+# optional: Krio speech-to-text (only when KRIO_ASR=1). Large: torch + ~4.6 GB of models.
+# torch transformers soundfile numpy vosk

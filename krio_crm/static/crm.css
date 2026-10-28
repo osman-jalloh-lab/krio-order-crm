@@ -1,0 +1,74 @@
+/* CRM layer on top of the v3 MAGNUM tokens (app.css). Motion: transform/opacity only, <=200ms ease-out, off for reduced motion. */
+:root{--ease:cubic-bezier(.23,1,.32,1)}
+.eyebrow{margin:0 0 2px;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sky-ink)}
+.sub{margin:4px 0 0}
+.hact{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.phpick select{min-height:40px;font-size:.9rem}
+.backl{display:inline-flex;align-items:center;gap:4px;text-decoration:none;color:var(--muted);margin-bottom:6px}
+.backl .ico{width:16px;height:16px}
+.nav.n5{grid-template-columns:repeat(5,1fr)}
+.cnt{display:inline-block;min-width:20px;padding:0 6px;border-radius:99px;background:#EEF2F7;color:var(--muted);font-size:.75rem;text-align:center;font-weight:700}
+.filters a.on .cnt,.tabs2 a.on .cnt{background:#2A2A3C;color:#fff}
+.rowlink{color:inherit;transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+.rowlink:active{transform:scale(.985)}
+.msg .what{display:block}.kind{display:inline-flex;vertical-align:-4px;margin-right:4px;color:var(--muted)}.kind .ico{width:16px;height:16px}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.av{font-family:'Clash Display';letter-spacing:.02em}
+.av.sm{width:34px;height:34px;font-size:.8rem;flex:none}.av.lg{width:56px;height:56px;font-size:1.15rem;flex:none;background:var(--sun);color:var(--ink)}
+.av.shop{background:var(--ink);color:var(--sun)}.av.shop .ico{width:26px;height:26px}
+.idrow{display:flex;gap:14px;align-items:center}
+.legend{font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.legend .pct{margin:0}
+.retype{display:flex;gap:8px;margin-top:8px}.retype input{flex:1;min-width:0}
+/* tabs + search */
+.tabs2{display:flex;gap:4px;background:#EEF2F7;border-radius:12px;padding:4px;margin-bottom:12px;width:max-content;max-width:100%}
+.tabs2 a{padding:8px 14px;border-radius:9px;font-weight:600;text-decoration:none;color:var(--muted)}.tabs2 a.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+.search{display:flex;align-items:center;gap:6px;background:#fff;border-radius:12px;box-shadow:inset 0 0 0 1.5px var(--line);padding:0 10px}
+.search input{border:0;min-height:40px;padding:0;width:150px;outline:none}.search .ico{color:var(--muted);width:18px;height:18px}
+.search:focus-within{box-shadow:inset 0 0 0 2px var(--sky)}
+/* CRM table */
+.tablecard{padding:4px 0;overflow:hidden}
+.crm{width:100%;border-collapse:collapse}
+.crm th{text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--line)}
+.crm td{padding:10px 16px;border-bottom:1px solid var(--line)}.crm tr:last-child td{border:0}
+.crm tbody tr{cursor:pointer;transition:background .12s}.crm tbody tr:hover{background:var(--offwhite)}
+.crm .r{text-align:right}.cell{display:flex;gap:10px;align-items:center;text-decoration:none}.cell .d{display:block}
+@media(max-width:700px){.hide-m{display:none}.crm th,.crm td{padding:10px 12px}.search input{width:110px}}
+/* timeline */
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li a{display:block;position:relative;padding:10px 0 12px 22px;text-decoration:none;border-left:2px solid var(--line);margin-left:6px}
+.timeline li:last-child a{border-color:transparent}
+.tdot{position:absolute;left:-7px;top:14px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 3px var(--sky)}
+.timeline .row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.timeline li a:hover b{text-decoration:underline}
+/* forms */
+.fld{display:flex;flex-direction:column;gap:4px;font-size:.82rem;font-weight:700;color:var(--muted)}
+.fld input,.fld select,.fld textarea{font-weight:400;font-size:1rem;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px var(--sky-bg)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* pharmacies pipeline */
+.pipe{display:grid;gap:12px;grid-auto-flow:column;grid-auto-columns:minmax(260px,82%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+.pipe .col{scroll-snap-align:start;background:#E9EFF6;border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:10px}
+.pipe h3{display:flex;gap:6px;align-items:center;font-size:.9rem}
+.pcard{text-decoration:none;display:block;transition:transform .16s var(--ease)}.pcard:active{transform:scale(.98)}
+.pcard .row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.minis{display:flex;gap:12px;margin-top:10px;font-size:.8rem;color:var(--muted)}.minis b{color:var(--ink)}
+.empty-col{margin:0;padding:6px 4px}
+@media(min-width:1024px){.pipe{grid-auto-flow:row;grid-template-columns:repeat(4,1fr)}}
+.addp{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px}.addp h2{width:100%}.addp input{flex:1;min-width:160px}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.lrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.lrow:last-child{border:0}a.lrow:hover b{text-decoration:underline}
+/* receipt table */
+.rt{width:100%;border-collapse:collapse}.rt th{text-align:left;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:0 8px 8px}
+.rt td{padding:10px 8px;border-top:1px solid var(--line);vertical-align:top}
+/* summary */
+.stat.hero{background:var(--ink);color:#fff}.stat.hero b{color:var(--sun)}
+.stats.s3{grid-template-columns:repeat(3,1fr)}
+.savebar{position:sticky;bottom:76px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:var(--r);box-shadow:var(--shadow)}
+@media(min-width:1024px){.savebar{bottom:16px}}
+.tbl.cat{padding:0 8px}.tbl.cat tr.newrow input{border-style:dashed}
+@media(max-width:700px){.tablecard{background:none;box-shadow:none;padding:0}.tbl.cat{padding:0}}
+.btn{transition:transform .12s var(--ease),background .15s}.btn:active{transform:scale(.97)}
+@media(hover:none){.msg:hover{box-shadow:var(--shadow)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}

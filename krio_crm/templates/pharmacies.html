@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Pharmacies{% endblock %}{% block body %}{% from "_m.html" import ic %}
+<div class=head><div><p class=eyebrow>CRM</p><h1>Pharmacies</h1><p class="muted small sub">Shops using the service, from first contact to paying.</p></div></div>
+<div class="tabs2"><a href="/customers">Customers</a><a class=on href="/pharmacies">Pharmacies <span class=cnt>{{rows|length}}</span></a></div>
+<div class=pipe>{% for s in ['lead','trial','active','paused'] %}{% set grp=rows|selectattr('status','equalto',s)|list %}<section class=col><h3>{{s|capitalize}} <span class=cnt>{{grp|length}}</span></h3>
+{% for p in grp %}<a class="card pcard" href="/pharmacies/{{p.id}}"><div class=row><b>{{p.name}}</b><span class="chip plain">{{p.plan}}</span></div><div class="small muted">{{p.town or '—'}}</div>
+<div class=minis><span><b class=num>{{p.n_orders}}</b> orders</span><span><b class=num>{{p.n_customers}}</b> customers</span><span><b class=num>{{p.n_items}}</b> items</span></div></a>{% else %}<p class="muted small empty-col">None</p>{% endfor %}</section>{% endfor %}</div>
+<form class="card addp" method=post action="/pharmacies/new"><h2>Add a pharmacy</h2><input type=text name=name placeholder="Name (use TEST… for demos)" aria-label="Pharmacy name" required><input type=text name=town placeholder="Town" aria-label="Town"><button class=btn>{{ic('plus')}}Add</button></form>
+{% endblock %}
