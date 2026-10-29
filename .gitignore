@@ -6,3 +6,13 @@ data/
 __pycache__/
 *.pyc
 *.log
+node_modules/
+*.db
+*.pem
+*.key
+uploads/
+audio/
+*.ogg
+*.opus
+*.m4a
+*.mp3
